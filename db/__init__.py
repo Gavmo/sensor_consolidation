@@ -70,6 +70,8 @@ class SensorDataBase:
             );
             """
         )
+        self.data.commit()
+        cursor.close()
 
     def hello_world(self, var):
 

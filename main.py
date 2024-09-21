@@ -21,7 +21,7 @@ Security requirement is low and can be a pre shared key
 import os
 
 from fastapi import FastAPI
-from objects import SensorIdent
+from objects import SensorIdent, SensorData
 
 from db import SensorDataBase
 
@@ -48,11 +48,16 @@ def register_sensor(sensor_ident: SensorIdent):
                                      )
 
 
-def collect_data():
+@app.post("/api/send_data")
+def collect_data(sensor_data: SensorData):
     """
     Provide to the API the sensor ID, timestamp, value.
 
     Probaly no need for a return value.  HTTP 200 is ok.
     :return:
     """
-    pass
+
+    return sensor_db.record_sensor_data(sensor_data.sensor_id,
+                                        sensor_data.timestamp,
+                                        sensor_data.value
+                                        )
