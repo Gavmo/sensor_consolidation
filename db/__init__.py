@@ -57,6 +57,18 @@ class SensorDataBase:
                        )
         return cursor.fetchall()
 
+    def record_sensor_data(self, sensor_id, timestamp, value):
+        cursor = self.data.cursor()
+        cursor.execute(
+            f"""
+            INSERT INTO sensor_data (sensor_id, timestamp, data_value) VALUES
+            ({int(sensor_id)},
+             '{timestamp}',
+             '{value}'
+            );
+            """
+        )
+
 
 
 # For testing
@@ -72,5 +84,7 @@ if __name__ == '__main__':
     print(db.register_sensor("test_sensor", "Temperature", "Celsius"))
     print(db.register_sensor("test_sensor2", "Temperature", "Celsius"))
     print(db.register_sensor("test_sensor3", "Temperature", "Celsius"))
+    db.record_sensor_data(2, 1234453, 444.4)
+    print(db.data.cursor().execute("Select * from sensor_data;").fetchall()[0])
     # del db
     # os.remove("tes.db")
