@@ -21,12 +21,14 @@ Security requirement is low and can be a pre shared key
 import os
 
 from fastapi import FastAPI
-from objects import SensorIdent, SensorData
+from objects import SensorIdent
 
 from db import SensorDataBase
 
-
-sensor_db = SensorDataBase('db/tes.db')
+if os.getenv("db_f_path"):
+    sensor_db = SensorDataBase(os.getenv("db_f_path"))
+else:
+    sensor_db = SensorDataBase('db/tes.db')
 
 
 app = FastAPI(title="API")
