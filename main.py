@@ -18,13 +18,22 @@ Security requirement is low and can be a pre shared key
 
 
 """
+import os
 
 from fastapi import FastAPI
+from objects import SensorIdent
 
-app = FastAPI()
+from db import SensorDataBase
 
 
-def register_sensor():
+sensor_db = SensorDataBase('db/tes.db')
+
+
+app = FastAPI(title="API")
+
+
+@app.post("/api/sensor/register")
+def register_sensor(sensor_ident: SensorIdent):
     """
     Sensor reports name, classification, value, unit.
 
@@ -33,7 +42,10 @@ def register_sensor():
 
     :return: integer
     """
-    pass
+    return sensor_db.register_sensor(sensor_ident.name,
+                                     sensor_ident.classification,
+                                     sensor_ident.unit
+                                     )
 
 
 def collect_data():

@@ -6,18 +6,19 @@ class SensorDataBase:
     def __init__(self, db_file):
         #  If the DB file does not exist, build the pre defined schema
         if not os.path.exists(db_file):
-            self.data = sqlite3.connect(db_file)
+            self.data = sqlite3.connect(db_file, check_same_thread=False)
             with open("db_build.sql", 'r') as db_definition:
                 cursor = self.data.cursor()
                 cursor.executescript(db_definition.read())
+                self.data.commit()
+                cursor.close()
         else:
-            self.data = sqlite3.connect(db_file)
+            self.data = sqlite3.connect(db_file, check_same_thread=False)
 
     def register_sensor(self, name, classification, unit):
         cursor = self.data.cursor()
         # Check for existing records
         id = self.get_id(name, classification, unit)
-
         if len(id) != 0:
             return_val = id[0][0]
         else:
@@ -37,6 +38,7 @@ class SensorDataBase:
                     );
                 """
             )
+            self.data.commit()
             return_val = self.get_id(name, classification, unit)[0][0]
         return return_val
 
@@ -68,6 +70,10 @@ class SensorDataBase:
             );
             """
         )
+
+    def hello_world(self, var):
+
+        return var
 
 
 
