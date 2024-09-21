@@ -29,6 +29,16 @@ INSERT INTO unit_ref (unit_name, unit_si) VALUES (
     'C'
 );
 
+INSERT INTO unit_ref (unit_name, unit_si) VALUES (
+    'Amps',
+    'A'
+);
+
+INSERT INTO unit_ref (unit_name, unit_si) VALUES (
+    'Volts',
+    'V'
+);
+
 INSERT INTO classification_ref (classification) VALUES (
     'Temperature'
 );
