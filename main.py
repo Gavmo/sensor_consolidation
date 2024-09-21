@@ -49,7 +49,7 @@ def register_sensor(sensor_ident: SensorIdent):
 
 
 @app.post("/api/send_data")
-def collect_data(sensor_data: SensorData):
+def collect_data(sensor_id, timestamp, value):
     """
     Provide to the API the sensor ID, timestamp, value.
 
@@ -57,7 +57,15 @@ def collect_data(sensor_data: SensorData):
     :return:
     """
 
-    return sensor_db.record_sensor_data(sensor_data.sensor_id,
-                                        sensor_data.timestamp,
-                                        sensor_data.value
+    return sensor_db.record_sensor_data(sensor_id,
+                                        timestamp,
+                                        value
                                         )
+
+
+@app.post("/api/getsensordata")
+def get_sensor_data(sensor_id, date_from=None):
+    try:
+        return sensor_db.retrieve_data(sensor_id, date_from=date_from)
+    except Exception as e:
+        return e.args

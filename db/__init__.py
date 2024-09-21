@@ -1,6 +1,8 @@
 import os
 import sqlite3
 
+from objects import SensorIdent, SensorData
+
 
 class SensorDataBase:
     def __init__(self, db_file):
@@ -72,6 +74,48 @@ class SensorDataBase:
         )
         self.data.commit()
         cursor.close()
+
+    def retrieve_data(self, sensor_id, date_from=None):
+        """Get the data from a given sensor.  Optionally provide a unix timestamp to gety everything after that date"""
+        query = f"""
+                SELECT sd.sensor_id,
+                sid.sensor_name,
+                cls.classification,
+                sd.record_id,
+                sd.timestamp,
+                sd.data_value,
+                units.unit_name, 
+                units.unit_si
+                FROM sensor_data sd
+                INNER JOIN sensor_ident sid ON
+                sid.sensor_id = sd.sensor_id
+                INNER JOIN unit_ref units ON
+                units.unit_id = sid.sensor_id
+                INNER JOIN classification_ref cls ON
+                cls.classification_id = sid.classification_id
+                WHERE sd.sensor_id = {sensor_id}
+                """
+        # Append the date filter
+        if date_from:
+            query += f"""AND timestamp > {date_from}"""
+        cursor = self.data.cursor()
+        cursor.execute(query)
+        # Use the first row to instantiate the return object
+        first_row = cursor.fetchone()
+        data = SensorIdent(name=first_row[1],
+                           classification=first_row[2],
+                           unit=first_row[6]
+                           )
+        data.add_sensor_data(SensorData(timestamp=first_row[4],
+                                        value=first_row[5]
+                                        )
+                             )
+        for record in cursor.fetchall():
+            data.add_sensor_data(SensorData(timestamp=record[4],
+                                            value=record[5]
+                                            )
+                                 )
+        return data
 
     def hello_world(self, var):
 
