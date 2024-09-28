@@ -9,7 +9,7 @@ class SensorDataBase:
         #  If the DB file does not exist, build the pre defined schema
         if not os.path.exists(db_file):
             self.data = sqlite3.connect(db_file, check_same_thread=False)
-            with open("db_build.sql", 'r') as db_definition:
+            with open("db/db_build.sql", 'r') as db_definition:
                 cursor = self.data.cursor()
                 cursor.executescript(db_definition.read())
                 self.data.commit()
