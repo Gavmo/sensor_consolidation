@@ -22,7 +22,7 @@ import os
 
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
-from objects import SensorIdent
+from objects import SensorIdent, DataRequest
 
 from db import SensorDataBase
 
@@ -77,8 +77,8 @@ def collect_data(sensor_id, timestamp, value):
 
 
 @app.post("/api/getsensordata")
-def get_sensor_data(sensor_id, date_from=None):
+def get_sensor_data(parms: DataRequest):
     try:
-        return sensor_db.retrieve_data(sensor_id, date_from=date_from)
+        return sensor_db.retrieve_data(parms.sensor_id, date_from=parms.date_from)
     except Exception as e:
         return e.args

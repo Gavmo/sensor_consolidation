@@ -17,3 +17,8 @@ class SensorIdent(BaseModel):
             setattr(self, "sensor_data", [data])
         else:
             getattr(self, "sensor_data").append(data)
+
+
+class DataRequest(BaseModel):
+    sensor_id: int
+    date_from: int = None
