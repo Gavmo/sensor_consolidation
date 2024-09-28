@@ -21,6 +21,7 @@ Security requirement is low and can be a pre shared key
 import os
 
 from fastapi import FastAPI
+from fastapi.middleware.cors import CORSMiddleware
 from objects import SensorIdent
 
 from db import SensorDataBase
@@ -32,6 +33,16 @@ else:
 
 
 app = FastAPI(title="API")
+
+origins = [
+    "http://127.0.0.1",
+    "http://127.0.0.1:5000",
+]
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=origins,
+)
 
 
 @app.post("/api/sensor/register")
